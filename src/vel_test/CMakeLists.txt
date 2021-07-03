@@ -146,6 +146,9 @@ add_executable(scan_test src/scan_test.cpp)
 target_link_libraries(scan_test ${catkin_LIBRARIES})
 add_executable(goal_test src/goal_test.cpp)
 target_link_libraries(goal_test ${catkin_LIBRARIES})
+
+add_executable(cancel_goal src/cancel_goal.cpp)
+target_link_libraries(cancel_goal ${catkin_LIBRARIES})
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

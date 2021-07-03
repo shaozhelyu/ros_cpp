@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-02 13:24:51
- * @LastEditTime: 2021-07-03 12:42:05
+ * @LastEditTime: 2021-07-03 12:45:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/src/goal_test.cpp
@@ -20,8 +20,7 @@
 
 cancelGoal::cancelGoal(ros::NodeHandle nh){
     pubCancel = nh.advertise<actionlib_msgs::GoalID>("/move_base/cancel",10);
-    peopleSub = nh.subscribe("/people",1,&goalTest::personDetectCallback,this);
-    periodicUpdateTimer_ = nh.createTimer(ros::Duration(1./10.0), &goalTest::periodicUpdate, this);  
+    peopleSub = nh.subscribe("/people",1,&cancelGoal::personDetectCallback,this);
 }
 
 void cancelGoal::personDetectCallback(const std_msgs::Bool& ifPerson){

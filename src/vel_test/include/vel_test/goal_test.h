@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-02 15:58:32
- * @LastEditTime: 2021-07-03 12:07:31
+ * @LastEditTime: 2021-07-03 12:45:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/include/vel_test/goal_test.h
@@ -18,7 +18,6 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCl
 public:
     goalTest(ros::NodeHandle nh);
 
-    void cancelGoal();
     void personDetectCallback(const std_msgs::Bool& ifPerson);
     void publishGoal();
 
@@ -28,7 +27,6 @@ public:
 private:
     ros::NodeHandle nh;
     ros::Subscriber peopleSub;
-    ros::Subscriber v;
 
     MoveBaseClient* ac;
     // this one is used to publish cancel command
