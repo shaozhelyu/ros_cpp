@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-01 16:00:41
- * @LastEditTime: 2021-07-01 16:19:29
+ * @LastEditTime: 2021-07-01 18:03:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/src/scan_test.cpp
@@ -20,7 +20,7 @@ int main(int argc, char** argv){
   double ranges[num_readings];
   double intensities[num_readings];
 
-  int count = 0;
+  int count = 2;
   ros::Rate r(1.0);
   while(n.ok()){
     //generate some fake data for our laser scan
@@ -50,7 +50,10 @@ int main(int argc, char** argv){
     }
 
     scan_pub.publish(scan);
-    ++count;
+    // ++count;
+    // if(count > 50){
+    //     count = 0;
+    // }
     r.sleep();
   }
 }

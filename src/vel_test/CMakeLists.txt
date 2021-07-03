@@ -8,9 +8,12 @@ project(vel_test)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  actionlib  
   roscpp
   rospy
   std_msgs
+  actionlib_msgs
+  move_base_msgs
   # message_generation
 )
 
@@ -69,10 +72,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  actionlib_msgs
+  std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -108,6 +112,7 @@ catkin_package(
 #  LIBRARIES vel_test
 #  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
+  CATKIN_DEPENDS actionlib_msgs
 )
 
 ###########
@@ -139,6 +144,8 @@ add_executable(vel_test src/vel_test.cpp)
 target_link_libraries(vel_test ${catkin_LIBRARIES})
 add_executable(scan_test src/scan_test.cpp)
 target_link_libraries(scan_test ${catkin_LIBRARIES})
+add_executable(goal_test src/goal_test.cpp)
+target_link_libraries(goal_test ${catkin_LIBRARIES})
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
