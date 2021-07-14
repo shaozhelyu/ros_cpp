@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-02 15:58:32
- * @LastEditTime: 2021-07-03 12:45:00
+ * @LastEditTime: 2021-07-06 12:31:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/include/vel_test/goal_test.h
@@ -16,7 +16,7 @@ class goalTest
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
 public:
-    goalTest(ros::NodeHandle nh);
+    goalTest(ros::NodeHandle nh,ros::NodeHandle nh_priv);
 
     void personDetectCallback(const std_msgs::Bool& ifPerson);
     void publishGoal();
@@ -36,6 +36,9 @@ private:
     double* y_goal;
     double* yaw_goal;
 
+    double square_length_x;
+    double square_length_y;
+
     // the number of goals
     int goal_num;
 
@@ -47,6 +50,10 @@ private:
 
     // if there is a person
     bool peopleDetected;
+
+    double stop_time;
+
+    double restart_delay;
 
 };
 

@@ -1,0 +1,11 @@
+<launch>
+<!-- <node pkg="tf" type="tf_remap" name="tf_remapper" output="screen">
+  <rosparam param="mappings">
+    [{old: imu, new: /imuu}]
+  </rosparam>
+</node> -->
+<node pkg="rosbag" type="play" name="player" args="--clock $(find vel_test)/bags/bag.bag">
+  <remap from="tf" to="tf_old" />
+</node>
+<!-- <node pkg="tf" type="static_transform_publisher" name="imu_broadcaster" args="0.48 0 0 0 0 0 1 base_link imu 100" /> -->
+</launch>

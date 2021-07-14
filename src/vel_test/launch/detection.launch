@@ -1,0 +1,5 @@
+<launch>
+    <node pkg = "vel_test" name = "human_detect_node" type="cancel_goal">
+        <param name="restart_delay" value = "20.0"/>
+    </node>
+</launch>
