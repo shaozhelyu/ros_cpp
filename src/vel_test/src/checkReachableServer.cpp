@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-14 14:00:25
- * @LastEditTime: 2021-07-14 16:22:45
+ * @LastEditTime: 2021-07-14 17:32:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/src/checkValid.cpp
@@ -9,21 +9,20 @@
 
 #include <iostream>
 #include <vel_test/checkReachableServer.h>
-#include <nav_msgs/Odometry.h>
-#include <std_msgs/Float32MultiArray.h>
+
 
 checkReachable::checkReachable(ros::NodeHandle nh, ros::NodeHandle nh_priv):
 _nh(nh),
 _nh_priv(nh_priv)
 {
-    server = _nh.advertiseService("CheckValid",checkReachable::checkReach,this);
-    odomSub = _nh.subscribe("/odom",1,&checkReachable::currPosCallback,this);
-    contourSub = _nh.subscribe("/grass_contour",1,&checkReachable::contourCallback,this);
+    server = _nh.advertiseService("CheckValid",&checkReachable::checkReach,this);
+    // odomSub = _nh.subscribe("/odom",1,&checkReachable::currPosCallback,this);
+    // contourSub = _nh.subscribe("/grass_contour",1,&checkReachable::contourCallback,this);
 }
 
-void checkReachable::currPosCallback(const nav_msgs::Odometry& odom){
-    curr_x = odom.pose.pose.position.x;
-    curr_y = odom.pose.pose.position.y;
+void checkReachable::currPosCallback(const nav_msgs::Odometry::ConstPtr& odom){
+    curr_x = odom->pose.pose.position.x;
+    curr_y = odom->pose.pose.position.y;
 }
 
 void checkReachable::contourCallback(const std_msgs::Float32MultiArray& arrays){
@@ -33,15 +32,36 @@ void checkReachable::contourCallback(const std_msgs::Float32MultiArray& arrays){
 checkReachable::~checkReachable(){}
 
 bool checkReachable::checkReach(vel_test::CheckValid::Request &req,
-            vel_test::CheckValid::Response &res
-){
+            vel_test::CheckValid::Response &res)
+{
+    boost::shared_ptr<nav_msgs::Odometry const> sharedOdom;
+    nav_msgs::Odometry odom; 
+    sharedOdom = ros::topic::waitForMessage<nav_msgs::Odometry>("/odom",ros::Duration(2));
+    if(sharedOdom != nullptr){
+        odom = *sharedOdom;
+    } else {
+        res.status = NOODOM;
+        return true;
+    }
+
+    boost::shared_ptr<std_msgs::Float32MultiArray const> sharedArrays;
+    std_msgs::Float32MultiArray arrays;
+    sharedArrays = ros::topic::waitForMessage<std_msgs::Float32MultiArray>("/grass_contour",ros::Duration(2));
+    if(sharedArrays != nullptr){
+        arrays = *sharedArrays;
+    } else {
+        res.status = NODETECT;
+        return true;
+    }
+    curr_x = odom.pose.pose.position.x;
+    curr_y = odom.pose.pose.position.y;
     double x = req.x;
     double y = req.y;
     std::cout << req.x << " " << req.y << std::endl;
     if(x*x + y*y < 1){
-        res.valid = true;
+        res.status = REACHABLE;
     } else {
-        res.valid = false;
+        res.status = UNREACHABLE;
     }
     return true;
 }

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-14 16:04:00
- * @LastEditTime: 2021-07-14 16:21:49
+ * @LastEditTime: 2021-07-14 17:31:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/include/vel_test/checkReachableServer.h
@@ -11,6 +11,11 @@
 #include <ros/ros.h>
 #include <vector>
 #include <vel_test/CheckValid.h>
+#include <nav_msgs/Odometry.h>
+#include <std_msgs/Float32MultiArray.h>
+
+enum status {REACHABLE, UNREACHABLE, NOODOM, NODETECT};
+
 class checkReachable
 {
 public:
@@ -18,7 +23,7 @@ public:
     ~checkReachable();
     bool checkReach(vel_test::CheckValid::Request &req,
             vel_test::CheckValid::Response &res);
-    void currPosCallback(const nav_msgs::Odometry& odom);
+    void currPosCallback(const nav_msgs::Odometry::ConstPtr& odom);
     void contourCallback(const std_msgs::Float32MultiArray& arrays);
 private:
     ros::NodeHandle _nh;

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-13 18:02:55
- * @LastEditTime: 2021-07-14 15:46:04
+ * @LastEditTime: 2021-07-14 17:30:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vel_test/include/vel_test/contour_detect.h
@@ -12,6 +12,7 @@
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 #include <std_msgs/Bool.h>
+
 
 class contourDetect{
 

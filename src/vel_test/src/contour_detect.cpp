@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-13 18:00:05
- * @LastEditTime: 2021-07-14 15:55:23
+ * @LastEditTime: 2021-07-14 17:37:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vel_test/src/contour_detect.cpp
@@ -17,7 +17,7 @@
 #include <tf2/LinearMath/Quaternion.h>
 #include <geometry_msgs/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-
+#include <vel_test/checkReachableServer.h>
 #include <vel_test/contour_detect.h>
 #include <vel_test/CheckValid.h>
 
@@ -41,10 +41,11 @@ _nh_priv(nh_priv)
 }
 
 void contourDetect::periodicUpdate(const ros::TimerEvent& event){
+    checkValid();
     if(goal_count < goal_num){
         double time_now = ros::Time::now().toSec();
         if(car_running){
-            checkValid();
+            
             publishGoal();
         }
     } else {
@@ -80,21 +81,38 @@ void contourDetect::publishGoal(){
 }
 void contourDetect::checkValid(){
     bool valid = false;
+    int nonSensorCount = 0;
     while(!valid && goal_count < goal_num){
         vel_test::CheckValid srv;
         srv.request.x = x_goal[goal_count];
         srv.request.y = y_goal[goal_count];
         if(checkValidClient.call(srv)){
-            if(srv.response.valid == true){
+            if(srv.response.status == REACHABLE){
                 break;
-            } else {
+            } else if(srv.response.status == UNREACHABLE){
                 ROS_INFO("Goal %f %f unreachable. ",x_goal[goal_count], y_goal[goal_count]);
                 goal_count ++;
+                nonSensorCount = 0;
                 continue;
-            } 
+            } else {
+                nonSensorCount ++;
+                
+                if(nonSensorCount == 5){
+                    if(srv.response.status == NOODOM){
+                        ROS_INFO("Cannot get current odom. ");
+                    } else {
+                        ROS_INFO("Cannot get current contour. ");
+                    }
+                    goal_count = goal_num;
+                    ros::shutdown();
+                    break;
+                }
+            }
         } else {
             ROS_ERROR("Failed to call service checkvalid");
+            goal_count = goal_num;            
             ros::shutdown();
+            break;
         }
         
     }
