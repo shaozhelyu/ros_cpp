@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-14 14:00:25
- * @LastEditTime: 2021-07-14 17:32:14
+ * @LastEditTime: 2021-07-15 13:45:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/src/checkValid.cpp
@@ -57,8 +57,7 @@ bool checkReachable::checkReach(vel_test::CheckValid::Request &req,
     curr_y = odom.pose.pose.position.y;
     double x = req.x;
     double y = req.y;
-    std::cout << req.x << " " << req.y << std::endl;
-    if(x*x + y*y < 1){
+    if(x*x + y*y < 3){
         res.status = REACHABLE;
     } else {
         res.status = UNREACHABLE;

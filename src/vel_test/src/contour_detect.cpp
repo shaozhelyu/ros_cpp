@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-13 18:00:05
- * @LastEditTime: 2021-07-14 17:37:24
+ * @LastEditTime: 2021-07-15 13:45:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vel_test/src/contour_detect.cpp
@@ -25,13 +25,13 @@ contourDetect::contourDetect(ros::NodeHandle nh, ros::NodeHandle nh_priv):
 _nh(nh),
 _nh_priv(nh_priv)
 {
-    goal_num = 9;
+    goal_num = 13;
     goal_count = 0;
     double square_length_x = 3.0;
     double square_length_y = 0.3;
-    x_goal = new double[goal_num]{0, square_length_x, square_length_x, square_length_x, square_length_x, 0, 0, 0, 0};
-    y_goal = new double[goal_num]{0, 0, 0, square_length_y, square_length_y, square_length_y, square_length_y, 0, 0};
-    yaw_goal = new double[goal_num]{0.0, 0.0, M_PI/2, M_PI/2, M_PI, M_PI, -M_PI/2, -M_PI/2, 0.0}; 
+    x_goal = new double[goal_num]{0, square_length_x/3, square_length_x*2/3,square_length_x, square_length_x, square_length_x, square_length_x, square_length_x*2/3, square_length_x/3, 0, 0, 0, 0};
+    y_goal = new double[goal_num]{0, 0, 0, 0, 0, square_length_y, square_length_y, square_length_y, square_length_y, square_length_y, square_length_y, 0, 0};
+    yaw_goal = new double[goal_num]{0.0, 0, 0, 0.0, M_PI/2, M_PI/2, M_PI, M_PI, M_PI, M_PI, -M_PI/2, -M_PI/2, 0.0}; 
     ac = new MoveBaseClient("move_base",true);
     while(!ac -> waitForServer(ros::Duration(5.0))){
         ROS_INFO("Waiting for the move_base action server to come up");
@@ -88,6 +88,7 @@ void contourDetect::checkValid(){
         srv.request.y = y_goal[goal_count];
         if(checkValidClient.call(srv)){
             if(srv.response.status == REACHABLE){
+                ROS_INFO("Reachable. ");
                 break;
             } else if(srv.response.status == UNREACHABLE){
                 ROS_INFO("Goal %f %f unreachable. ",x_goal[goal_count], y_goal[goal_count]);
@@ -95,8 +96,7 @@ void contourDetect::checkValid(){
                 nonSensorCount = 0;
                 continue;
             } else {
-                nonSensorCount ++;
-                
+                nonSensorCount ++;                
                 if(nonSensorCount == 5){
                     if(srv.response.status == NOODOM){
                         ROS_INFO("Cannot get current odom. ");
@@ -125,6 +125,7 @@ int main(int argc,char** argv){
     ros::NodeHandle nh_priv("~");
 
     contourDetect detect(nh,nh_priv);
+    ROS_INFO("Contour start");
     ros::spin();
     return 0;
 
