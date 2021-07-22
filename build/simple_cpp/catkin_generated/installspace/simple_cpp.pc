@@ -1,0 +1,8 @@
+prefix=/home/shaozhe/Documents/Project/ROS/tutorial/cpp_ws/install
+
+Name: simple_cpp
+Description: Description of simple_cpp
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: roscpp rospy std_msgs

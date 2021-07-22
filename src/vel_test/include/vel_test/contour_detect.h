@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-13 18:02:55
- * @LastEditTime: 2021-07-14 17:30:44
+ * @LastEditTime: 2021-07-22 16:06:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vel_test/include/vel_test/contour_detect.h
@@ -22,8 +22,9 @@ public:
     contourDetect(ros::NodeHandle nh,ros::NodeHandle nh_priv);
     ~contourDetect();
     void publishGoal();
-    void checkValid();
-    void periodicUpdate(const ros::TimerEvent& event);
+    bool checkValid(double x, double y);
+    bool generateRotate(move_base_msgs::MoveBaseGoal& goal);
+    void periodicPublishGoal(const ros::TimerEvent& event);
 private:
     ros::NodeHandle _nh;
     ros::NodeHandle _nh_priv;
@@ -35,7 +36,7 @@ private:
     
     double *x_goal;
     double *y_goal;
-    double* yaw_goal;
+    // double* yaw_goal;
 
     double square_length_x;
     double square_length_y;
@@ -44,6 +45,13 @@ private:
     int goal_count;
 
     bool car_running;
+
+    bool rotate2NextGoal;
+    double goal_x;
+    double goal_y;
+    double pos_x;
+    double pos_y;
+    double last_rotate;
     
 };
 

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-14 14:00:25
- * @LastEditTime: 2021-07-15 13:45:09
+ * @LastEditTime: 2021-07-21 17:48:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/src/checkValid.cpp
@@ -34,32 +34,34 @@ checkReachable::~checkReachable(){}
 bool checkReachable::checkReach(vel_test::CheckValid::Request &req,
             vel_test::CheckValid::Response &res)
 {
-    boost::shared_ptr<nav_msgs::Odometry const> sharedOdom;
-    nav_msgs::Odometry odom; 
-    sharedOdom = ros::topic::waitForMessage<nav_msgs::Odometry>("/odom",ros::Duration(2));
-    if(sharedOdom != nullptr){
-        odom = *sharedOdom;
-    } else {
-        res.status = NOODOM;
-        return true;
-    }
+    // boost::shared_ptr<nav_msgs::Odometry const> sharedOdom;
+    // nav_msgs::Odometry odom; 
+    // sharedOdom = ros::topic::waitForMessage<nav_msgs::Odometry>("/odom",ros::Duration(2));
+    // if(sharedOdom != nullptr){
+    //     odom = *sharedOdom;
+    // } else {
+    //     res.status = NOODOM;
+    //     return true;
+    // }
 
-    boost::shared_ptr<std_msgs::Float32MultiArray const> sharedArrays;
-    std_msgs::Float32MultiArray arrays;
-    sharedArrays = ros::topic::waitForMessage<std_msgs::Float32MultiArray>("/grass_contour",ros::Duration(2));
-    if(sharedArrays != nullptr){
-        arrays = *sharedArrays;
-    } else {
-        res.status = NODETECT;
-        return true;
-    }
-    curr_x = odom.pose.pose.position.x;
-    curr_y = odom.pose.pose.position.y;
+    // boost::shared_ptr<std_msgs::Float32MultiArray const> sharedArrays;
+    // std_msgs::Float32MultiArray arrays;
+    // sharedArrays = ros::topic::waitForMessage<std_msgs::Float32MultiArray>("/grass_contour",ros::Duration(2));
+    // if(sharedArrays != nullptr){
+    //     arrays = *sharedArrays;
+    // } else {
+    //     res.status = NODETECT;
+    //     return true;
+    // }
+    // curr_x = odom.pose.pose.position.x;
+    // curr_y = odom.pose.pose.position.y;
     double x = req.x;
     double y = req.y;
     if(x*x + y*y < 3){
+        ROS_INFO("distance %f reachable", x*x + y*y);
         res.status = REACHABLE;
     } else {
+        ROS_INFO("distance %f unreachable", x*x + y*y);
         res.status = UNREACHABLE;
     }
     return true;

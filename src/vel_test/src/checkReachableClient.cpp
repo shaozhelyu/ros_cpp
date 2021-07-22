@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-14 14:13:48
- * @LastEditTime: 2021-07-14 17:38:19
+ * @LastEditTime: 2021-07-22 16:26:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/src/checkReachableClient.cpp
@@ -21,7 +21,7 @@ int main(int argc, char ** argv){
     ros::ServiceClient client = nh.serviceClient<vel_test::CheckValid>("CheckValid");
     vel_test::CheckValid srv;
     srv.request.x = atoll(argv[1]);
-    srv.request.y = atoll(argv[2]);
+    srv.request.y = atoll(argv[2]);    
 
     if(client.call(srv)){
         ROS_INFO("Sum: %d", srv.response.status);

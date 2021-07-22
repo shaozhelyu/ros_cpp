@@ -1,0 +1,8 @@
+prefix=/home/shaozhe/Documents/Project/ROS/tutorial/cpp_ws/install
+
+Name: vel_test
+Description: Description of vel_test
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: actionlib_msgs

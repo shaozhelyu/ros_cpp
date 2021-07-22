@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-02 15:58:32
- * @LastEditTime: 2021-07-06 12:31:15
+ * @LastEditTime: 2021-07-21 17:05:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/include/vel_test/goal_test.h
@@ -22,6 +22,8 @@ public:
     void publishGoal();
 
     void periodicUpdate(const ros::TimerEvent& event);
+    
+    void generateRotate(move_base_msgs::MoveBaseGoal& goal);
     ~goalTest();
 
 private:
@@ -35,6 +37,13 @@ private:
     double* x_goal;
     double* y_goal;
     double* yaw_goal;
+
+    double last_x;
+    double last_y;
+    double curr_x;
+    double curr_y;
+    // double curr_rotate;
+    // double last_rotate;
 
     double square_length_x;
     double square_length_y;

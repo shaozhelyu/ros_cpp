@@ -1,0 +1,2 @@
+actionlib_tutorials:simple_cpp:vel_test
+-DCATKIN_DEVEL_PREFIX=/home/shaozhe/Documents/Project/ROS/tutorial/cpp_ws/devel -DCMAKE_INSTALL_PREFIX=/home/shaozhe/Documents/Project/ROS/tutorial/cpp_ws/install -G Unix Makefiles
