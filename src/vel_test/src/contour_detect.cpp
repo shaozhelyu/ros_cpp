@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-13 18:00:05
- * @LastEditTime: 2021-07-22 16:28:04
+ * @LastEditTime: 2021-07-23 17:03:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vel_test/src/contour_detect.cpp
@@ -25,19 +25,30 @@ contourDetect::contourDetect(ros::NodeHandle nh, ros::NodeHandle nh_priv):
 _nh(nh),
 _nh_priv(nh_priv),
 goal_count(0),
-goal_num(9),
+goal_num(24),
 pos_x(0.0),
 pos_y(0.0),
 last_rotate(0.0),
-rotate2NextGoal(true)
+rotate2NextGoal(true),
+goal_finished(true)
 {
     // initialize all the parameter we need
     double square_length_x = 3.0;
     double square_length_y = 0.3;
 
     // hard code initializa goals
-    x_goal = new double[goal_num]{0,square_length_x/3, square_length_x*2/3, square_length_x,square_length_x,square_length_x*2/3, square_length_x/3,0,0};
-    y_goal = new double[goal_num]{0, 0, 0, 0, square_length_y, square_length_y, square_length_y, square_length_y, 0};
+    x_goal = new double[goal_num]{0,square_length_x/3, square_length_x*2/3, square_length_x,
+                                    square_length_x,square_length_x*2/3, square_length_x/3,0,
+                                    0,square_length_x/3, square_length_x*2/3, square_length_x,
+                                    square_length_x,square_length_x*2/3, square_length_x/3,0,
+                                    0,square_length_x/3, square_length_x*2/3, square_length_x,
+                                    square_length_x,square_length_x*2/3, square_length_x/3,0};
+    y_goal = new double[goal_num]{0, 0, 0, 0, 
+                                    square_length_y, square_length_y, square_length_y, square_length_y,
+                                    square_length_y * 2,square_length_y * 2,square_length_y * 2,square_length_y * 2,
+                                    square_length_y * 3,square_length_y * 3,square_length_y * 3,square_length_y * 3,
+                                    square_length_y * 4,square_length_y * 4,square_length_y * 4,square_length_y * 4,
+                                    square_length_y * 5,square_length_y * 5,square_length_y * 5,square_length_y * 5};
     
     // boost::shared_ptr<nav_msgs::Odometry const> sharedOdom = ros::topic::waitForMessage<nav_msgs::Odometry>("/odom",ros::Duration(2));
     // if(sharedOdom != nullptr){
@@ -51,6 +62,9 @@ rotate2NextGoal(true)
         ROS_INFO("Waiting for the move_base action server to come up");
     }
 
+    // initialize subscribe the people detect result
+    peopleSub = nh.subscribe("/people",1,&contourDetect::personDetectCallback,this);
+
     // initialize the timer for periodic publish the goal
     periodicUpdateTimer_ = _nh.createTimer(ros::Duration(1./2.0), &contourDetect::periodicPublishGoal,this);
     
@@ -63,7 +77,7 @@ rotate2NextGoal(true)
 periodic publish goal
 */
 void contourDetect::periodicPublishGoal(const ros::TimerEvent& event){
-    
+        
     if(goal_count < goal_num){
         double time_now = ros::Time::now().toSec();
         if(car_running){            
@@ -81,14 +95,20 @@ publish goal point to move_base server
 */ 
 void contourDetect::publishGoal(){
     move_base_msgs::MoveBaseGoal goal;
-    if(!contourDetect::generateRotate(goal)){
-        return;
+    if(goal_finished){
+        if(!contourDetect::generateRotate(goal)){
+            return;
+        }
+    } else {
+        goal = last_goal;
     }
+    
+    last_goal = goal;
     ac -> sendGoal(goal);  
     ac -> waitForResult();
     if(ac -> getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
         ROS_INFO("Reach goal %f %f", goal.target_pose.pose.position.x, goal.target_pose.pose.position.y);
-        // goal_count ++;
+        goal_finished = true;
     }
     else{
       ROS_INFO("The base failed to move to goal, maybe the goal is canceled");
@@ -129,6 +149,7 @@ bool contourDetect::generateRotate(move_base_msgs::MoveBaseGoal& goal){
             // if it need to go to next goal
             goal_x = x_goal[goal_count];
             goal_y = y_goal[goal_count];
+            
             // if this goal is valid then continue
             // else if it is invalid, then check next goal
             if(!checkValid(goal_x,goal_y)){
@@ -199,6 +220,11 @@ bool contourDetect::checkValid(double x, double y){
     return false;
 }
 
+void contourDetect::personDetectCallback(const std_msgs::Bool& ifPerson){
+    if(ifPerson.data == false){
+        car_running = true;
+    }
+}
 contourDetect::~contourDetect(){}
 
 

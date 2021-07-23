@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-02 13:24:51
- * @LastEditTime: 2021-07-21 17:24:11
+ * @LastEditTime: 2021-07-23 17:31:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/vel_test/src/goal_test.cpp
@@ -17,7 +17,6 @@
 #include <tf2/LinearMath/Quaternion.h>
 #include <geometry_msgs/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-// typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 #include <math.h>
 #include <nav_msgs/Odometry.h>
 
@@ -165,6 +164,7 @@ void goalTest::personDetectCallback(const std_msgs::Bool& ifPerson){
 //       stop_time = ros::Time::now().toSec();
 //     }
 // }
+
 goalTest::~goalTest(){}
 int main(int argc, char** argv){
   ros::init(argc, argv, "simple_navigation_goals");

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-13 18:02:55
- * @LastEditTime: 2021-07-22 16:06:02
+ * @LastEditTime: 2021-07-22 17:41:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vel_test/include/vel_test/contour_detect.h
@@ -21,6 +21,8 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCl
 public:
     contourDetect(ros::NodeHandle nh,ros::NodeHandle nh_priv);
     ~contourDetect();
+    void personDetectCallback(const std_msgs::Bool& ifPerson);
+    
     void publishGoal();
     bool checkValid(double x, double y);
     bool generateRotate(move_base_msgs::MoveBaseGoal& goal);
@@ -31,12 +33,18 @@ private:
 
     MoveBaseClient* ac;
     ros::Publisher pubCancel;
+    ros::Subscriber peopleSub;
+    
     ros::Timer periodicUpdateTimer_;
     ros::ServiceClient checkValidClient;
     
     double *x_goal;
     double *y_goal;
-    // double* yaw_goal;
+    
+    bool goal_finished;
+
+    // record the goal we published
+    move_base_msgs::MoveBaseGoal last_goal;
 
     double square_length_x;
     double square_length_y;
